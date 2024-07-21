@@ -3,25 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simple Linked List Visualization</title>
+    <title>Advanced Linked List Visualization</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            min-height: 100vh;
             margin: 0;
             background-color: #f0f0f0;
         }
         .container {
             text-align: center;
+            max-width: 800px;
+            padding: 20px;
         }
         .linked-list {
             display: flex;
+            flex-wrap: wrap;
             justify-content: center;
             align-items: center;
             margin-bottom: 20px;
+            min-height: 70px;
         }
         .node {
             width: 50px;
@@ -31,9 +35,10 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            margin-right: 10px;
+            margin: 5px;
             border-radius: 25px;
             position: relative;
+            transition: all 0.3s ease;
         }
         .node::after {
             content: '→';
@@ -44,46 +49,124 @@
         .node:last-child::after {
             content: '';
         }
-        button {
+        .highlight {
+            background-color: #e74c3c;
+            transform: scale(1.1);
+        }
+        button, input {
             margin: 5px;
             padding: 5px 10px;
             font-size: 14px;
         }
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+        }
+        @keyframes addNode {
+            from { opacity: 0; transform: scale(0.5); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        @keyframes removeNode {
+            from { opacity: 1; transform: scale(1); }
+            to { opacity: 0; transform: scale(0.5); }
+        }
+        .add-animation { animation: addNode 0.3s ease-out; }
+        .remove-animation { animation: removeNode 0.3s ease-in; }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Linked List Visualization</h1>
+        <h1>Advanced Linked List Visualization</h1>
         <div id="linkedList" class="linked-list"></div>
-        <div>
-            <button onclick="addNode()">Add Node</button>
-            <button onclick="removeNode()">Remove Node</button>
+        <div class="controls">
+            <input type="number" id="valueInput" placeholder="Enter value">
+            <input type="number" id="positionInput" placeholder="Enter position">
+            <button onclick="addNode()">Add at End</button>
+            <button onclick="insertNode()">Insert at Position</button>
+            <button onclick="removeNode()">Remove Last</button>
+            <button onclick="deleteNode()">Delete by Value</button>
+            <button onclick="searchNode()">Search Value</button>
         </div>
     </div>
 
     <script>
         const linkedList = document.getElementById('linkedList');
-        let nodeCount = 0;
+        const valueInput = document.getElementById('valueInput');
+        const positionInput = document.getElementById('positionInput');
+        let nodes = [];
+
+        function createNodeElement(value) {
+            const node = document.createElement('div');
+            node.className = 'node add-animation';
+            node.textContent = value;
+            setTimeout(() => node.classList.remove('add-animation'), 300);
+            return node;
+        }
 
         function addNode() {
-            if (nodeCount < 10) {
-                nodeCount++;
-                const node = document.createElement('div');
-                node.className = 'node';
-                node.textContent = nodeCount;
+            const value = valueInput.value || nodes.length + 1;
+            if (nodes.length < 15) {
+                const node = createNodeElement(value);
                 linkedList.appendChild(node);
+                nodes.push(node);
+                valueInput.value = '';
+            }
+        }
+
+        function insertNode() {
+            const value = valueInput.value || nodes.length + 1;
+            let position = parseInt(positionInput.value) - 1;
+            if (isNaN(position) || position < 0) position = 0;
+            if (position > nodes.length) position = nodes.length;
+
+            if (nodes.length < 15) {
+                const node = createNodeElement(value);
+                if (position === nodes.length) {
+                    linkedList.appendChild(node);
+                } else {
+                    linkedList.insertBefore(node, nodes[position]);
+                }
+                nodes.splice(position, 0, node);
+                valueInput.value = '';
+                positionInput.value = '';
             }
         }
 
         function removeNode() {
-            if (nodeCount > 0) {
-                linkedList.removeChild(linkedList.lastChild);
-                nodeCount--;
+            if (nodes.length > 0) {
+                const lastNode = nodes.pop();
+                lastNode.classList.add('remove-animation');
+                setTimeout(() => linkedList.removeChild(lastNode), 300);
             }
         }
 
-        // Initialize with 3 nodes
-        for (let i = 0; i < 3; i++) {
+        function deleteNode() {
+            const value = valueInput.value;
+            const index = nodes.findIndex(node => node.textContent === value);
+            if (index !== -1) {
+                const node = nodes[index];
+                node.classList.add('remove-animation');
+                setTimeout(() => {
+                    linkedList.removeChild(node);
+                    nodes.splice(index, 1);
+                }, 300);
+                valueInput.value = '';
+            }
+        }
+
+        function searchNode() {
+            const value = valueInput.value;
+            nodes.forEach(node => node.classList.remove('highlight'));
+            const found = nodes.filter(node => node.textContent === value);
+            found.forEach(node => node.classList.add('highlight'));
+            setTimeout(() => found.forEach(node => node.classList.remove('highlight')), 2000);
+            valueInput.value = '';
+        }
+
+        // Initialize with 5 nodes
+        for (let i = 0; i < 5; i++) {
             addNode();
         }
     </script>
