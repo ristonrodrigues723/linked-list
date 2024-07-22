@@ -28,17 +28,18 @@
             min-height: 70px;
         }
         .node {
-            width: 50px;
+            width: 120px;
             height: 50px;
-            background-color: #3498db;
+            background-color: #1a5f7a;
             color: white;
             display: flex;
-            justify-content: center;
+            justify-content: space-between;
             align-items: center;
             margin: 5px;
-            border-radius: 25px;
+            border-radius: 5px;
             position: relative;
             transition: all 0.3s ease;
+            cursor: pointer;
         }
         .node::after {
             content: '→';
@@ -48,6 +49,20 @@
         }
         .node:last-child::after {
             content: '';
+        }
+        .node-data, .node-next {
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 0 10px;
+        }
+        .node-data {
+            width: 60%;
+            border-right: 1px solid white;
+        }
+        .node-next {
+            width: 40%;
         }
         .highlight {
             background-color: #e74c3c;
@@ -74,6 +89,10 @@
         }
         .add-animation { animation: addNode 0.3s ease-out; }
         .remove-animation { animation: removeNode 0.3s ease-in; }
+        #nodeInfo {
+            margin-top: 20px;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
@@ -89,20 +108,32 @@
             <button onclick="deleteNode()">Delete by Value</button>
             <button onclick="searchNode()">Search Value</button>
         </div>
+        <div id="nodeInfo"></div>
     </div>
 
     <script>
         const linkedList = document.getElementById('linkedList');
         const valueInput = document.getElementById('valueInput');
         const positionInput = document.getElementById('positionInput');
+        const nodeInfo = document.getElementById('nodeInfo');
         let nodes = [];
 
         function createNodeElement(value) {
             const node = document.createElement('div');
             node.className = 'node add-animation';
-            node.textContent = value;
+            node.innerHTML = `
+                <div class="node-data">${value}</div>
+                <div class="node-next">Next</div>
+            `;
+            node.onclick = () => displayNodeInfo(node);
             setTimeout(() => node.classList.remove('add-animation'), 300);
             return node;
+        }
+
+        function displayNodeInfo(node) {
+            const index = nodes.indexOf(node);
+            const nextValue = index < nodes.length - 1 ? nodes[index + 1].querySelector('.node-data').textContent : 'null';
+            nodeInfo.textContent = `Node ${index + 1}: Data = ${node.querySelector('.node-data').textContent}, Next = ${nextValue}`;
         }
 
         function addNode() {
@@ -112,6 +143,7 @@
                 linkedList.appendChild(node);
                 nodes.push(node);
                 valueInput.value = '';
+                updateNextPointers();
             }
         }
 
@@ -131,6 +163,7 @@
                 nodes.splice(position, 0, node);
                 valueInput.value = '';
                 positionInput.value = '';
+                updateNextPointers();
             }
         }
 
@@ -139,18 +172,20 @@
                 const lastNode = nodes.pop();
                 lastNode.classList.add('remove-animation');
                 setTimeout(() => linkedList.removeChild(lastNode), 300);
+                updateNextPointers();
             }
         }
 
         function deleteNode() {
             const value = valueInput.value;
-            const index = nodes.findIndex(node => node.textContent === value);
+            const index = nodes.findIndex(node => node.querySelector('.node-data').textContent === value);
             if (index !== -1) {
                 const node = nodes[index];
                 node.classList.add('remove-animation');
                 setTimeout(() => {
                     linkedList.removeChild(node);
                     nodes.splice(index, 1);
+                    updateNextPointers();
                 }, 300);
                 valueInput.value = '';
             }
@@ -159,10 +194,21 @@
         function searchNode() {
             const value = valueInput.value;
             nodes.forEach(node => node.classList.remove('highlight'));
-            const found = nodes.filter(node => node.textContent === value);
+            const found = nodes.filter(node => node.querySelector('.node-data').textContent === value);
             found.forEach(node => node.classList.add('highlight'));
             setTimeout(() => found.forEach(node => node.classList.remove('highlight')), 2000);
             valueInput.value = '';
+        }
+
+        function updateNextPointers() {
+            nodes.forEach((node, index) => {
+                const nextElement = node.querySelector('.node-next');
+                if (index < nodes.length - 1) {
+                    nextElement.textContent = 'Next';
+                } else {
+                    nextElement.textContent = 'null';
+                }
+            });
         }
 
         // Initialize with 5 nodes
