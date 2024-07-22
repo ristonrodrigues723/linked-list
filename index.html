@@ -3,21 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Advanced Linked List Visualization</title>
+    <title>Enhanced Linked List Visualization</title>
     <style>
+        :root {
+            --primary-color: #1a5f7a;
+            --secondary-color: #57c5b6;
+            --accent-color: #159895;
+            --background-color: #f0f9ff;
+            --text-color: #333;
+            --highlight-color: #e74c3c;
+            --error-color: #e74c3c;
+            --success-color: #2ecc71;
+        }
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
             margin: 0;
-            background-color: #f0f0f0;
+            background-color: var(--background-color);
+            color: var(--text-color);
         }
         .container {
             text-align: center;
-            max-width: 800px;
+            max-width: 900px;
             padding: 20px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
         }
         .linked-list {
             display: flex;
@@ -26,11 +44,14 @@
             align-items: center;
             margin-bottom: 20px;
             min-height: 70px;
+            padding: 10px;
+            background-color: var(--background-color);
+            border-radius: 5px;
         }
         .node {
             width: 120px;
             height: 50px;
-            background-color: #1a5f7a;
+            background-color: var(--primary-color);
             color: white;
             display: flex;
             justify-content: space-between;
@@ -40,12 +61,15 @@
             position: relative;
             transition: all 0.3s ease;
             cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
         .node::after {
             content: '→';
             position: absolute;
-            right: -15px;
-            color: #333;
+            right: -20px;
+            color: var(--accent-color);
+            font-size: 20px;
+            font-weight: bold;
         }
         .node:last-child::after {
             content: '';
@@ -59,25 +83,70 @@
         }
         .node-data {
             width: 60%;
-            border-right: 1px solid white;
+            border-right: 1px solid rgba(255, 255, 255, 0.3);
+            font-weight: bold;
         }
         .node-next {
             width: 40%;
+            font-size: 0.9em;
+            color: rgba(255, 255, 255, 0.8);
         }
         .highlight {
-            background-color: #e74c3c;
+            background-color: var(--highlight-color);
             transform: scale(1.1);
-        }
-        button, input {
-            margin: 5px;
-            padding: 5px 10px;
-            font-size: 14px;
         }
         .controls {
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
             gap: 10px;
+            margin-bottom: 20px;
+        }
+        button, input {
+            margin: 5px;
+            padding: 8px 12px;
+            font-size: 14px;
+            border: none;
+            border-radius: 5px;
+            background-color: var(--secondary-color);
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: var(--accent-color);
+        }
+        input {
+            background-color: white;
+            border: 1px solid var(--secondary-color);
+            color: var(--text-color);
+        }
+        input:focus {
+            outline: none;
+            border-color: var(--accent-color);
+        }
+        #nodeInfo {
+            margin-top: 20px;
+            font-weight: bold;
+            color: var(--primary-color);
+            background-color: var(--background-color);
+            padding: 10px;
+            border-radius: 5px;
+        }
+        #messageBox {
+            margin-top: 20px;
+            padding: 10px;
+            border-radius: 5px;
+            font-weight: bold;
+            display: none;
+        }
+        .error {
+            background-color: #ffebee;
+            color: var(--error-color);
+        }
+        .success {
+            background-color: #e8f5e9;
+            color: var(--success-color);
         }
         @keyframes addNode {
             from { opacity: 0; transform: scale(0.5); }
@@ -89,15 +158,11 @@
         }
         .add-animation { animation: addNode 0.3s ease-out; }
         .remove-animation { animation: removeNode 0.3s ease-in; }
-        #nodeInfo {
-            margin-top: 20px;
-            font-weight: bold;
-        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Advanced Linked List Visualization</h1>
+        <h1>Enhanced Linked List Visualization</h1>
         <div id="linkedList" class="linked-list"></div>
         <div class="controls">
             <input type="number" id="valueInput" placeholder="Enter value">
@@ -107,8 +172,10 @@
             <button onclick="removeNode()">Remove Last</button>
             <button onclick="deleteNode()">Delete by Value</button>
             <button onclick="searchNode()">Search Value</button>
+            <button onclick="reverseList()">Reverse List</button>
         </div>
         <div id="nodeInfo"></div>
+        <div id="messageBox"></div>
     </div>
 
     <script>
@@ -116,7 +183,17 @@
         const valueInput = document.getElementById('valueInput');
         const positionInput = document.getElementById('positionInput');
         const nodeInfo = document.getElementById('nodeInfo');
+        const messageBox = document.getElementById('messageBox');
         let nodes = [];
+
+        function showMessage(message, isError = false) {
+            messageBox.textContent = message;
+            messageBox.className = isError ? 'error' : 'success';
+            messageBox.style.display = 'block';
+            setTimeout(() => {
+                messageBox.style.display = 'none';
+            }, 3000);
+        }
 
         function createNodeElement(value) {
             const node = document.createElement('div');
@@ -144,6 +221,9 @@
                 nodes.push(node);
                 valueInput.value = '';
                 updateNextPointers();
+                showMessage(`Node with value ${value} added successfully.`);
+            } else {
+                showMessage("Maximum number of nodes reached (15).", true);
             }
         }
 
@@ -164,6 +244,9 @@
                 valueInput.value = '';
                 positionInput.value = '';
                 updateNextPointers();
+                showMessage(`Node with value ${value} inserted at position ${position + 1}.`);
+            } else {
+                showMessage("Maximum number of nodes reached (15).", true);
             }
         }
 
@@ -173,6 +256,9 @@
                 lastNode.classList.add('remove-animation');
                 setTimeout(() => linkedList.removeChild(lastNode), 300);
                 updateNextPointers();
+                showMessage("Last node removed successfully.");
+            } else {
+                showMessage("The list is already empty.", true);
             }
         }
 
@@ -188,6 +274,9 @@
                     updateNextPointers();
                 }, 300);
                 valueInput.value = '';
+                showMessage(`Node with value ${value} deleted successfully.`);
+            } else {
+                showMessage(`Value ${value} not found in the list.`, true);
             }
         }
 
@@ -195,9 +284,24 @@
             const value = valueInput.value;
             nodes.forEach(node => node.classList.remove('highlight'));
             const found = nodes.filter(node => node.querySelector('.node-data').textContent === value);
-            found.forEach(node => node.classList.add('highlight'));
-            setTimeout(() => found.forEach(node => node.classList.remove('highlight')), 2000);
+            if (found.length > 0) {
+                found.forEach(node => node.classList.add('highlight'));
+                setTimeout(() => found.forEach(node => node.classList.remove('highlight')), 2000);
+                showMessage(`Value ${value} found in the list.`);
+            } else {
+                showMessage(`Value ${value} not found in the list.`, true);
+            }
             valueInput.value = '';
+        }
+
+        function reverseList() {
+            nodes.reverse();
+            while (linkedList.firstChild) {
+                linkedList.removeChild(linkedList.firstChild);
+            }
+            nodes.forEach(node => linkedList.appendChild(node));
+            updateNextPointers();
+            showMessage("List reversed successfully.");
         }
 
         function updateNextPointers() {
