@@ -3,103 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Advanced Doubly Linked List Visualization</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 20px;
-            background-color: #f0f0f0;
-        }
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
-            background-color: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-        }
-        h1 {
-            text-align: center;
-            color: #333;
-        }
-        .linked-list {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-wrap: wrap;
-            margin: 20px 0;
-            min-height: 100px;
-            background-color: #f9f9f9;
-            border-radius: 4px;
-            padding: 10px;
-        }
-        .node-wrapper {
-            display: flex;
-            align-items: center;
-        }
-        .node {
-            display: flex;
-            width: 180px;
-            height: 60px;
-            margin: 10px 5px;
-            cursor: pointer;
-            transition: transform 0.3s ease;
-        }
-        .node:hover {
-            transform: scale(1.1);
-        }
-        .node-content {
-            display: flex;
-            width: 100%;
-            border: 2px solid #3498db;
-            border-radius: 4px;
-            overflow: hidden;
-        }
-        .node-prev, .node-value, .node-next {
-            flex: 1;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background-color: #3498db;
-            color: white;
-            padding: 5px;
-            font-size: 14px;
-        }
-        .node-prev, .node-next {
-            font-size: 12px;
-        }
-        .node-value {
-            font-weight: bold;
-            border-left: 1px solid white;
-            border-right: 1px solid white;
-        }
-        .arrow {
-            font-size: 24px;
-            color: #3498db;
-            margin: 0 5px;
-        }
-        .controls {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
-        button, input {
-            padding: 5px 10px;
-            font-size: 14px;
-        }
-        #messageBox {
-            margin-top: 20px;
-            padding: 10px;
-            background-color: #f9f9f9;
-            border-radius: 4px;
-            min-height: 20px;
-        }
-    </style>
+    <title>Doubly Linked List Visualization</title>
+    <link rel="stylesheet" href="doubly.css">
 </head>
 <body>
+    <nav>
+        <div class="nav-content">
+            <a href="#" class="logo">DataStructures</a>
+            <ul class="nav-links">
+                <li><a href="#">Home</a></li>
+                <li><a href="\singly.html" >Singly Linked List</a></li>
+                <li><a href="#" class="active">Doubly Linked List</a></li>
+              
+             
+         
+                <li><a href="others\circular">Doubly Linked List</a></li>
+                <!-- Add more navigation links as needed -->
+            </ul>
+        </div>
+    </nav>
     <div class="container">
         <h1>Doubly Linked List Visualization</h1>
         <div id="linkedList" class="linked-list"></div>
@@ -113,133 +35,6 @@
         </div>
         <div id="messageBox"></div>
     </div>
-
-    <script>
-        const linkedList = document.getElementById('linkedList');
-        const valueInput = document.getElementById('valueInput');
-        const randomSizeInput = document.getElementById('randomSizeInput');
-        const messageBox = document.getElementById('messageBox');
-        let nodes = [];
-
-        function showMessage(message) {
-            messageBox.textContent = message;
-        }
-
-        function createNodeElement(value, prev, next) {
-            const nodeWrapper = document.createElement('div');
-            nodeWrapper.className = 'node-wrapper';
-            
-            const node = document.createElement('div');
-            node.className = 'node';
-            node.innerHTML = `
-                <div class="node-content">
-                    <div class="node-prev">${prev}</div>
-                    <div class="node-value">${value}</div>
-                    <div class="node-next">${next}</div>
-                </div>
-            `;
-            node.onclick = () => displayNodeInfo(node);
-            
-            nodeWrapper.appendChild(node);
-            return nodeWrapper;
-        }
-
-        function updateNodeConnections() {
-            nodes.forEach((nodeWrapper, index) => {
-                const node = nodeWrapper.querySelector('.node');
-                const prevValue = index > 0 ? nodes[index - 1].querySelector('.node-value').textContent : 'null';
-                const nextValue = index < nodes.length - 1 ? nodes[index + 1].querySelector('.node-value').textContent : 'null';
-                node.querySelector('.node-prev').textContent = prevValue;
-                node.querySelector('.node-next').textContent = nextValue;
-
-                // Remove existing arrows
-                while (nodeWrapper.firstChild !== node) {
-                    nodeWrapper.removeChild(nodeWrapper.firstChild);
-                }
-                while (nodeWrapper.lastChild !== node) {
-                    nodeWrapper.removeChild(nodeWrapper.lastChild);
-                }
-
-                // Add arrows
-                if (index > 0) {
-                    const leftArrow = document.createElement('div');
-                    leftArrow.className = 'arrow';
-                    leftArrow.textContent = '⬅';
-                    nodeWrapper.insertBefore(leftArrow, node);
-                }
-                if (index < nodes.length - 1) {
-                    const rightArrow = document.createElement('div');
-                    rightArrow.className = 'arrow';
-                    rightArrow.textContent = '➡';
-                    nodeWrapper.appendChild(rightArrow);
-                }
-            });
-        }
-
-        function addNode() {
-            const value = valueInput.value || nodes.length + 1;
-            if (nodes.length < 8) {
-                const node = createNodeElement(value, 'null', 'null');
-                linkedList.appendChild(node);
-                nodes.push(node);
-                updateNodeConnections();
-                valueInput.value = '';
-                showMessage(`Node with value ${value} added.`);
-            } else {
-                showMessage("Maximum number of nodes reached (8).");
-            }
-        }
-
-        function removeNode() {
-            if (nodes.length > 0) {
-                const lastNode = nodes.pop();
-                linkedList.removeChild(lastNode);
-                updateNodeConnections();
-                showMessage("Last node removed.");
-            } else {
-                showMessage("The list is empty.");
-            }
-        }
-
-        function displayNodeInfo(node) {
-            const index = nodes.findIndex(wrapper => wrapper.querySelector('.node') === node);
-            const currentValue = node.querySelector('.node-value').textContent;
-            const prevValue = node.querySelector('.node-prev').textContent;
-            const nextValue = node.querySelector('.node-next').textContent;
-            
-            showMessage(`The current node is ${currentValue}, previous is ${prevValue}, next is ${nextValue}`);
-        }
-
-        function generateRandomList() {
-            const size = parseInt(randomSizeInput.value) || 5;
-            if (size < 1 || size > 8) {
-                showMessage("Please enter a size between 1 and 8.");
-                return;
-            }
-
-            clearList();
-
-            for (let i = 0; i < size; i++) {
-                const randomValue = Math.floor(Math.random() * 100) + 1;
-                const node = createNodeElement(randomValue, 'null', 'null');
-                linkedList.appendChild(node);
-                nodes.push(node);
-            }
-
-            updateNodeConnections();
-            showMessage(`Random list of ${size} nodes generated.`);
-        }
-
-        function clearList() {
-            linkedList.innerHTML = '';
-            nodes = [];
-            showMessage("List cleared.");
-        }
-
-        // Initialize with 3 nodes
-        for (let i = 0; i < 3; i++) {
-            addNode();
-        }
-    </script>
+    <script src="doubly.js"></script>
 </body>
 </html>
