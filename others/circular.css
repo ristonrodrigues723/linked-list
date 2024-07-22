@@ -10,48 +10,69 @@ body {
 
 .container {
     text-align: center;
-    background-color: white;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
 }
 
-.circular-list {
+.list-container {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 300px;
-    width: 300px;
-    margin: 20px auto;
-    position: relative;
-    border: 2px solid #333;
-    border-radius: 50%;
+    margin: 20px 0;
+}
+
+.node-container {
+    display: flex;
+    align-items: center;
 }
 
 .node {
-    position: absolute;
     width: 40px;
     height: 40px;
-    background-color: #3498db;
+    background-color: #4CAF50;
     color: white;
-    border-radius: 50%;
     display: flex;
     justify-content: center;
     align-items: center;
-    font-weight: bold;
+    border-radius: 50%;
+    margin: 0 10px;
+}
+
+.arrow {
+    width: 30px;
+    height: 2px;
+    background-color: #333;
+    position: relative;
+}
+
+.arrow::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: -4px;
+    width: 0;
+    height: 0;
+    border-left: 8px solid #333;
+    border-top: 5px solid transparent;
+    border-bottom: 5px solid transparent;
+}
+
+.last-node-arrow {
+    position: absolute;
+    width: 100%;
+    left: 0;
+    top: 60px;
+    transform: translateY(-50%);
 }
 
 .controls {
     margin-top: 20px;
 }
 
-button, input {
+input, button {
     margin: 5px;
     padding: 5px 10px;
 }
 
 #messageBox {
     margin-top: 20px;
-    height: 20px;
-    color: #333;
+    font-weight: bold;
 }
