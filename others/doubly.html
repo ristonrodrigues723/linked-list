@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Basic Doubly Linked List Visualization</title>
+    <title>Advanced Doubly Linked List Visualization</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -12,7 +12,7 @@
             background-color: #f0f0f0;
         }
         .container {
-            max-width: 800px;
+            max-width: 900px;
             margin: 0 auto;
             background-color: white;
             padding: 20px;
@@ -27,44 +27,47 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            flex-wrap: wrap;
             margin: 20px 0;
-            min-height: 60px;
+            min-height: 100px;
             background-color: #f9f9f9;
             border-radius: 4px;
             padding: 10px;
         }
         .node {
             display: flex;
-            justify-content: space-between;
+            flex-direction: column;
             align-items: center;
-            width: 100px;
-            height: 40px;
+            width: 80px;
+            margin: 10px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        .node:hover {
+            transform: scale(1.1);
+        }
+        .node-content {
+            width: 60px;
+            height: 60px;
             background-color: #3498db;
             color: white;
-            margin: 0 10px;
-            border-radius: 4px;
-            position: relative;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
         }
-        .node::before, .node::after {
-            content: '↔';
-            position: absolute;
-            color: #333;
-            font-size: 20px;
-        }
-        .node::before {
-            left: -15px;
-        }
-        .node::after {
-            right: -15px;
-        }
-        .node:first-child::before, .node:last-child::after {
-            content: '';
+        .node-prev, .node-next {
+            font-size: 12px;
+            color: #666;
+            margin: 2px 0;
         }
         .controls {
             display: flex;
             justify-content: center;
             gap: 10px;
             margin-bottom: 20px;
+            flex-wrap: wrap;
         }
         button, input {
             padding: 5px 10px;
@@ -87,6 +90,8 @@
             <input type="number" id="valueInput" placeholder="Enter value">
             <button onclick="addNode()">Add Node</button>
             <button onclick="removeNode()">Remove Last</button>
+            <button onclick="generateRandomList()">Generate Random List</button>
+            <input type="number" id="randomSizeInput" placeholder="Random list size" min="1" max="8" value="5">
         </div>
         <div id="messageBox"></div>
     </div>
@@ -94,6 +99,7 @@
     <script>
         const linkedList = document.getElementById('linkedList');
         const valueInput = document.getElementById('valueInput');
+        const randomSizeInput = document.getElementById('randomSizeInput');
         const messageBox = document.getElementById('messageBox');
         let nodes = [];
 
@@ -101,19 +107,34 @@
             messageBox.textContent = message;
         }
 
-        function createNodeElement(value) {
+        function createNodeElement(value, prev, next) {
             const node = document.createElement('div');
             node.className = 'node';
-            node.textContent = value;
+            node.innerHTML = `
+                <div class="node-prev">${prev}</div>
+                <div class="node-content">${value}</div>
+                <div class="node-next">${next}</div>
+            `;
+            node.onclick = () => displayNodeInfo(node);
             return node;
+        }
+
+        function updateNodeConnections() {
+            nodes.forEach((node, index) => {
+                const prevValue = index > 0 ? nodes[index - 1].querySelector('.node-content').textContent : 'null';
+                const nextValue = index < nodes.length - 1 ? nodes[index + 1].querySelector('.node-content').textContent : 'null';
+                node.querySelector('.node-prev').textContent = prevValue;
+                node.querySelector('.node-next').textContent = nextValue;
+            });
         }
 
         function addNode() {
             const value = valueInput.value || nodes.length + 1;
             if (nodes.length < 8) {
-                const node = createNodeElement(value);
+                const node = createNodeElement(value, 'null', 'null');
                 linkedList.appendChild(node);
                 nodes.push(node);
+                updateNodeConnections();
                 valueInput.value = '';
                 showMessage(`Node with value ${value} added.`);
             } else {
@@ -125,10 +146,43 @@
             if (nodes.length > 0) {
                 const lastNode = nodes.pop();
                 linkedList.removeChild(lastNode);
+                updateNodeConnections();
                 showMessage("Last node removed.");
             } else {
                 showMessage("The list is empty.");
             }
+        }
+
+        function displayNodeInfo(node) {
+            const index = nodes.indexOf(node);
+            const currentValue = node.querySelector('.node-content').textContent;
+            const prevValue = node.querySelector('.node-prev').textContent;
+            const nextValue = node.querySelector('.node-next').textContent;
+            
+            showMessage(`Current: ${currentValue}, Previous: ${prevValue}, Next: ${nextValue}`);
+        }
+
+        function generateRandomList() {
+            const size = parseInt(randomSizeInput.value) || 5;
+            if (size < 1 || size > 8) {
+                showMessage("Please enter a size between 1 and 8.");
+                return;
+            }
+
+            // Clear existing list
+            linkedList.innerHTML = '';
+            nodes = [];
+
+            // Generate new random list
+            for (let i = 0; i < size; i++) {
+                const randomValue = Math.floor(Math.random() * 100) + 1;
+                const node = createNodeElement(randomValue, 'null', 'null');
+                linkedList.appendChild(node);
+                nodes.push(node);
+            }
+
+            updateNodeConnections();
+            showMessage(`Random list of ${size} nodes generated.`);
         }
 
         // Initialize with 3 nodes
