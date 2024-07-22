@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Singly Linked List Visualization</title>
+    <link rel="stylesheet" href="singlylist.css">
+</head>
+<body>
+    <nav>
+        <div class="nav-content">
+            <a href="#" class="logo">LinkedList Viz</a>
+            <ul class="nav-links">
+                
+                <li><a href="#" class="active">Singly Linked List</a></li>
+                <li><a href="/doubly.html">Doubly Linked List</a></li>
+            </ul>
+        </div>
+    </nav>
+    <div class="container">
+        <h1>Singly Linked List Visualization</h1>
+        <div id="linkedList" class="linked-list"></div>
+        <div class="controls">
+            <input type="number" id="valueInput" placeholder="Enter value">
+            <input type="number" id="positionInput" placeholder="Enter position">
+            <button onclick="addNode()">Add at End</button>
+            <button onclick="insertNode()">Insert at Position</button>
+            <button onclick="removeNode()">Remove Last</button>
+            <button onclick="deleteNode()">Delete by Value</button>
+            <button onclick="searchNode()">Search Value</button>
+            <button onclick="reverseList()">Reverse List</button>
+            <button onclick="clearList()">Clear List</button>
+        </div>
+        <div id="messageBox"></div>
+    </div>
+    <script src="singlylist.js"></script>
+</body>
+</html>
