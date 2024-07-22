@@ -4,7 +4,80 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Basic Doubly Linked List Visualization</title>
-
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f0f0f0;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        .linked-list {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 20px 0;
+            min-height: 60px;
+            background-color: #f9f9f9;
+            border-radius: 4px;
+            padding: 10px;
+        }
+        .node {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100px;
+            height: 40px;
+            background-color: #3498db;
+            color: white;
+            margin: 0 10px;
+            border-radius: 4px;
+            position: relative;
+        }
+        .node::before, .node::after {
+            content: '↔';
+            position: absolute;
+            color: #333;
+            font-size: 20px;
+        }
+        .node::before {
+            left: -15px;
+        }
+        .node::after {
+            right: -15px;
+        }
+        .node:first-child::before, .node:last-child::after {
+            content: '';
+        }
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        button, input {
+            padding: 5px 10px;
+            font-size: 14px;
+        }
+        #messageBox {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border-radius: 4px;
+            min-height: 20px;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
@@ -17,5 +90,51 @@
         </div>
         <div id="messageBox"></div>
     </div>
+
+    <script>
+        const linkedList = document.getElementById('linkedList');
+        const valueInput = document.getElementById('valueInput');
+        const messageBox = document.getElementById('messageBox');
+        let nodes = [];
+
+        function showMessage(message) {
+            messageBox.textContent = message;
+        }
+
+        function createNodeElement(value) {
+            const node = document.createElement('div');
+            node.className = 'node';
+            node.textContent = value;
+            return node;
+        }
+
+        function addNode() {
+            const value = valueInput.value || nodes.length + 1;
+            if (nodes.length < 8) {
+                const node = createNodeElement(value);
+                linkedList.appendChild(node);
+                nodes.push(node);
+                valueInput.value = '';
+                showMessage(`Node with value ${value} added.`);
+            } else {
+                showMessage("Maximum number of nodes reached (8).");
+            }
+        }
+
+        function removeNode() {
+            if (nodes.length > 0) {
+                const lastNode = nodes.pop();
+                linkedList.removeChild(lastNode);
+                showMessage("Last node removed.");
+            } else {
+                showMessage("The list is empty.");
+            }
+        }
+
+        // Initialize with 3 nodes
+        for (let i = 0; i < 3; i++) {
+            addNode();
+        }
+    </script>
 </body>
 </html>
