@@ -1,4 +1,4 @@
-const linkedList = document.getElementById('linkedList');
+const listContainer = document.getElementById('listContainer');
 const valueInput = document.getElementById('valueInput');
 const positionInput = document.getElementById('positionInput');
 const messageBox = document.getElementById('messageBox');
@@ -34,127 +34,90 @@ function createNodeElement(value) {
     return nodeContainer;
 }
 
-function updateArrows() {
-    const circularArrow = document.querySelector('.circular-arrow');
-    if (circularArrow) {
-        circularArrow.remove();
-    }
+// function updateNodePositions() {
+//     const lastNodeArrow = document.querySelector('.last-node-arrow');
+//     if (lastNodeArrow) {
+//         lastNodeArrow.remove();
+//     }
 
-    if (nodes.length > 0) {
-        const newCircularArrow = document.createElement('div');
-        newCircularArrow.className = 'circular-arrow';
-        linkedList.appendChild(newCircularArrow);
+//     if (nodes.length > 1) {
+//         const lastNodeArrow = document.createElement('div');
+//         lastNodeArrow.className = 'last-node-arrow';
+//         listContainer.appendChild(lastNodeArrow);
+
+//         const firstNodeRect = nodes[0].getBoundingClientRect();
+//         const lastNodeRect = nodes[nodes.length - 1].getBoundingClientRect();
+//         const containerRect = listContainer.getBoundingClientRect();
+
+//         lastNodeArrow.style.width = `${lastNodeRect.right - firstNodeRect.left}px`;
+//         lastNodeArrow.style.left = `${firstNodeRect.left - containerRect.left}px`;
+//     }
+
+//     nodes.forEach((container, index) => {
+//         const arrow = container.querySelector('.arrow');
+//         arrow.style.display = index < nodes.length - 1 ? 'block' : 'none';
+        
+//         const nodeNext = container.querySelector('.node-next');
+//         nodeNext.textContent = index < nodes.length - 1 ? 'Next' : 'Null';
+//     });
+// }
+function updateNodePositions() {
+    // Remove existing arrows
+    const existingArrows = document.querySelectorAll('.last-node-arrow, .down-arrow, .up-arrow');
+    existingArrows.forEach(arrow => arrow.remove());
+
+    if (nodes.length > 1) {
+        const firstNodeRect = nodes[0].getBoundingClientRect();
+        const lastNodeRect = nodes[nodes.length - 1].getBoundingClientRect();
+        const containerRect = listContainer.getBoundingClientRect();
+
+        // Add bottom line
+        const bottomLine = document.createElement('div');
+        bottomLine.className = 'bottom-line';
+        listContainer.appendChild(bottomLine);
+        bottomLine.style.width = `${lastNodeRect.right - firstNodeRect.left}px`;
+        bottomLine.style.left = `${firstNodeRect.left - containerRect.left}px`;
+        bottomLine.style.top = `${lastNodeRect.bottom - containerRect.top + 30}px`;
+
+        // Add down arrow
+        const downArrow = document.createElement('div');
+        downArrow.className = 'down-arrow';
+        listContainer.appendChild(downArrow);
+        downArrow.style.left = `${lastNodeRect.right - containerRect.left - 10}px`;
+        downArrow.style.top = `${lastNodeRect.bottom - containerRect.top}px`;
+
+        // Add up arrow
+        const upArrow = document.createElement('div');
+        upArrow.className = 'up-arrow';
+        listContainer.appendChild(upArrow);
+        upArrow.style.left = `${firstNodeRect.left - containerRect.left}px`;
+        upArrow.style.top = `${lastNodeRect.bottom - containerRect.top + 10}px`;
     }
 
     nodes.forEach((container, index) => {
         const arrow = container.querySelector('.arrow');
-        const nodeLines = container.querySelector('.node-lines');
-        
-        if (index < nodes.length - 1) {
-            arrow.style.display = 'block';
-            nodeLines.style.display = 'block';
-        } else {
-            arrow.style.display = 'none';
-            nodeLines.style.display = 'none';
-        }
+        arrow.style.display = 'block';  // Always show arrows
         
         const nodeNext = container.querySelector('.node-next');
-        nodeNext.textContent = index < nodes.length - 1 ? 'Next' : 'Head';
+        nodeNext.textContent = index < nodes.length - 1 ? 'Next' : 'First';  // Last node points to first
     });
-
-    if (nodes.length > 1) {
-        const lastNodeArrow = document.createElement('div');
-        lastNodeArrow.className = 'last-node-arrow';
-        linkedList.appendChild(lastNodeArrow);
-
-        const firstNodeRect = nodes[0].getBoundingClientRect();
-        const lastNodeRect = nodes[nodes.length - 1].getBoundingClientRect();
-        const containerRect = linkedList.getBoundingClientRect();
-
-        lastNodeArrow.style.width = `${lastNodeRect.right - firstNodeRect.left}px`;
-        lastNodeArrow.style.left = `${firstNodeRect.left - containerRect.left}px`;
-
-        // Show lines for the last node
-        const lastNodeLines = nodes[nodes.length - 1].querySelector('.node-lines');
-        lastNodeLines.style.display = 'block';
-        const lastLineAcross = lastNodeLines.querySelector('.line-across');
-        lastLineAcross.style.width = `${(nodes.length - 1) * 160}px`; // Adjust this value as needed
-        lastLineAcross.style.left = '50%';
-    }
-    updateBottomLine();
-    drawConnectingLine();
 }
-
-function updateBottomLine() {
-    const bottomLine = document.querySelector('.bottom-line');
-    if (!bottomLine) {
-        const bottomLineContainer = document.createElement('div');
-        bottomLineContainer.className = 'bottom-line-container';
-        const newBottomLine = document.createElement('div');
-        newBottomLine.className = 'bottom-line';
-        const bottomArrow = document.createElement('div');
-        bottomArrow.className = 'bottom-arrow';
-        bottomLineContainer.appendChild(newBottomLine);
-        bottomLineContainer.appendChild(bottomArrow);
-        linkedList.appendChild(bottomLineContainer);
-    }
-
-    const containerRect = linkedList.getBoundingClientRect();
-    const bottomLineContainer = document.querySelector('.bottom-line-container');
-    bottomLineContainer.style.width = `${containerRect.width}px`;
-    bottomLineContainer.style.left = '0';
-    bottomLineContainer.style.bottom = '-30px';
-}
-
-line.style.height = '2px'; // Makes the line thinner
-line.style.backgroundColor = '#3498db'; // Changes the color to blue
-line.style.top = `${startY + (height / 2) - 1}px`; // Centers the line vertically
-
-function drawConnectingLine() {
-
-    const existingLine = document.querySelector('.connecting-line');
-    if (existingLine) {
-        existingLine.remove();
-    }
-
-    if (nodes.length < 2) return;
-
-    const line = document.createElement('div');
-    line.className = 'connecting-line';
-    linkedList.appendChild(line);
-
-    const firstNode = nodes[0].querySelector('.node');
-    const lastNode = nodes[nodes.length - 1].querySelector('.node');
-
-    const startX = firstNode.offsetLeft + firstNode.offsetWidth;
-    const startY = firstNode.offsetTop;
-    const endX = lastNode.offsetLeft + lastNode.offsetWidth;
-    const height = firstNode.offsetHeight;
-
-    line.style.position = 'absolute';
-    line.style.left = `${startX}px`;
-    line.style.top = `${startY}px`;
-    line.style.width = `${endX - startX}px`;
-    line.style.height = `${height}px`;
-    line.style.backgroundColor = '#333';
-}
-
 
 function displayNodeInfo(node) {
     const index = nodes.findIndex(n => n.querySelector('.node') === node);
-    const nextIndex = (index + 1) % nodes.length;
-    const nextValue = nodes[nextIndex].querySelector('.node-data').textContent;
+    const nextIndex = index < nodes.length - 1 ? index + 1 : -1;
+    const nextValue = nextIndex !== -1 ? nodes[nextIndex].querySelector('.node-data').textContent : 'Null';
     showMessage(`Node ${index + 1}: Data = ${node.querySelector('.node-data').textContent}, Next = ${nextValue}`);
 }
 
 function addNode() {
     const value = valueInput.value || nodes.length + 1;
-    if (nodes.length < 15) {
+    if (nodes.length < 6) {
         const node = createNodeElement(value);
-        linkedList.appendChild(node);
+        listContainer.appendChild(node);
         nodes.push(node);
         valueInput.value = '';
-        updateArrows();
+        updateNodePositions();
         showMessage(`Node with value ${value} added successfully.`);
     } else {
         showMessage("Maximum number of nodes reached (15).", true);
@@ -167,20 +130,20 @@ function insertNode() {
     if (isNaN(position) || position < 0) position = 0;
     if (position > nodes.length) position = nodes.length;
 
-    if (nodes.length < 15) {
+    if (nodes.length < 7) {
         const node = createNodeElement(value);
         if (position === nodes.length) {
-            linkedList.appendChild(node);
+            listContainer.appendChild(node);
         } else {
-            linkedList.insertBefore(node, nodes[position]);
+            listContainer.insertBefore(node, nodes[position]);
         }
         nodes.splice(position, 0, node);
         valueInput.value = '';
         positionInput.value = '';
-        updateArrows();
+        updateNodePositions();
         showMessage(`Node with value ${value} inserted at position ${position + 1}.`);
     } else {
-        showMessage("Maximum number of nodes reached (15).", true);
+        showMessage("Maximum number of nodes reached (6).", true);
     }
 }
 
@@ -188,8 +151,8 @@ function removeNode() {
     if (nodes.length > 0) {
         const lastNode = nodes.pop();
         lastNode.classList.add('remove-animation');
-        setTimeout(() => linkedList.removeChild(lastNode), 300);
-        updateArrows();
+        setTimeout(() => listContainer.removeChild(lastNode), 300);
+        updateNodePositions();
         showMessage("Last node removed successfully.");
     } else {
         showMessage("The list is already empty.", true);
@@ -203,9 +166,9 @@ function deleteNode() {
         const node = nodes[index];
         node.classList.add('remove-animation');
         setTimeout(() => {
-            linkedList.removeChild(node);
+            listContainer.removeChild(node);
             nodes.splice(index, 1);
-            updateArrows();
+            updateNodePositions();
         }, 300);
         valueInput.value = '';
         showMessage(`Node with value ${value} deleted successfully.`);
@@ -230,11 +193,11 @@ function searchNode() {
 
 function reverseList() {
     nodes.reverse();
-    while (linkedList.firstChild) {
-        linkedList.removeChild(linkedList.firstChild);
+    while (listContainer.firstChild) {
+        listContainer.removeChild(listContainer.firstChild);
     }
-    nodes.forEach(node => linkedList.appendChild(node));
-    updateArrows();
+    nodes.forEach(node => listContainer.appendChild(node));
+    updateNodePositions();
     showMessage("List reversed successfully.");
 }
 
@@ -243,9 +206,9 @@ function clearList() {
         node.classList.add('remove-animation');
     });
     setTimeout(() => {
-        linkedList.innerHTML = '';
+        listContainer.innerHTML = '';
         nodes = [];
-        updateArrows();
+        updateNodePositions();
         showMessage("List cleared successfully.");
     }, 300);
 }
@@ -253,21 +216,4 @@ function clearList() {
 // Initialize with 5 nodes
 for (let i = 0; i < 5; i++) {
     addNode();
-}
-
-function updateArrows() {
- 
-
-    drawConnectingLine();
-}
-
-window.addEventListener('resize', updateBottomLine);
-
-function updateBottomLine() {
-    const linkedList = document.getElementById('linkedList');
-    const bottomLineContainer = document.querySelector('.bottom-line-container');
-    const bottomLine = document.querySelector('.bottom-line');
-
-    const linkedListRect = linkedList.getBoundingClientRect();
-    bottomLineContainer.style.width = `${linkedListRect.width}px`;
 }

@@ -7,76 +7,6 @@ body {
     margin: 0;
     background-color: #f0f0f0;
 }
-#linkedList {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    align-items: center;
-    margin: 20px 0;
-    position: relative;
-    min-height: 150px;
-    padding: 10px;
-    background-color: #f9f9f9;
-    border-radius: 5px;
-    box-shadow: inset 0 0 5px rgba(0,0,0,0.1);
-}
-
-.connecting-line {
-    pointer-events: none;
-    z-index: -1;
-}
-
-.bottom-line-container {
-    position: absolute;
-    height: 30px;
-    bottom: -30px;
-    left: 0;
-    right: 0;
-}
-
-.bottom-line {
-    position: absolute;
-    height: 2px;
-    background-color: #333;
-    left: 15px;
-    right: 15px;
-    bottom: 15px;
-}
-
-.bottom-arrow {
-    position: absolute;
-    right: 7px;
-    bottom: 11px;
-    width: 0;
-    height: 0;
-    border-left: 8px solid #333;
-    border-top: 5px solid transparent;
-    border-bottom: 5px solid transparent;
-}
-.bottom-line-container {
-    position: relative;
-    height: 30px;
-    margin-top: 20px;
-}
-
-.bottom-line {
-    position: absolute;
-    height: 2px;
-    background-color: #333;
-    left: 15px;
-    right: 15px;
-}
-
-.bottom-arrow {
-    position: absolute;
-    right: 7px;
-    top: -4px;
-    width: 0;
-    height: 0;
-    border-left: 8px solid #333;
-    border-top: 5px solid transparent;
-    border-bottom: 5px solid transparent;
-}
 
 .container {
     text-align: center;
@@ -94,7 +24,7 @@ h1 {
     margin-bottom: 20px;
 }
 
-#linkedList {
+.list-container {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
@@ -157,16 +87,6 @@ h1 {
     margin: 0 5px;
 }
 
-.connecting-line {
-    position: absolute;
-    top: 0;
-    left: 0;
-    pointer-events: none;
-    width: 100%;
-    height: 100%;
-   
-}
-
 .arrow::after {
     content: '';
     position: absolute;
@@ -184,18 +104,6 @@ h1 {
     height: 2px;
     background-color: #333;
     bottom: 20px;
-}
-
-.circular-arrow {
-    position: absolute;
-    width: 20px;
-    height: 20px;
-    border: 2px solid #333;
-    border-top: none;
-    border-right: none;
-    bottom: -30px;
-    left: 50%;
-    transform: translateX(-50%) rotate(45deg);
 }
 
 .controls {
@@ -222,7 +130,7 @@ button:hover {
     background-color: #2980b9;
 }
 
-input[type="number"] {
+input[type="number"], input[type="text"] {
     background-color: white;
     color: #2c3e50;
     border: 1px solid #bdc3c7;
@@ -258,6 +166,61 @@ input[type="number"] {
 .highlight {
     background-color: #e74c3c;
     transform: scale(1.1);
+}
+.bottom-line {
+    position: absolute;
+    height: 2px;
+    background-color: #333;
+}
+
+.down-arrow, .up-arrow {
+    position: absolute;
+    width: 2px;
+    height: 20px;
+    background-color: #333;
+}
+
+.down-arrow::after, .up-arrow::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+}
+
+.down-arrow::after {
+    bottom: -5px;
+    left: -4px;
+    border-top: 8px solid #333;
+}
+
+.up-arrow::after {
+    top: -5px;
+    left: -4px;
+    border-bottom: 8px solid #333;
+}
+.a2-arrow, .a3-arrow {
+    position: absolute;
+    width: 2px;
+    height: 20px;
+    background-color: #333;
+}
+
+.a2-arrow::after, .a3-arrow::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: -4px;
+    width: 0;
+    height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 8px solid #333;
+}
+
+.a3-arrow {
+    transform: rotate(180deg);
 }
 
 @keyframes addNode {
