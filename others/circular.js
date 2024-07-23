@@ -20,6 +20,7 @@ function createNodeElement(value) {
     node.className = 'node';
     node.innerHTML = `
         <div class="node-data">${value}</div>
+        <div class="node-next">Next</div>
     `;
     node.onclick = () => displayNodeInfo(node);
 
@@ -47,13 +48,11 @@ function updateArrows() {
 
     nodes.forEach((container, index) => {
         const arrow = container.querySelector('.arrow');
-        arrow.style.display = 'block';
+        arrow.style.display = index < nodes.length - 1 ? 'block' : 'none';
+        
+        const nodeNext = container.querySelector('.node-next');
+        nodeNext.textContent = index < nodes.length - 1 ? 'Next' : 'Head';
     });
-
-    const lastNodeArrow = document.querySelector('.last-node-arrow');
-    if (lastNodeArrow) {
-        lastNodeArrow.remove();
-    }
 
     if (nodes.length > 1) {
         const lastNodeArrow = document.createElement('div');
@@ -70,7 +69,7 @@ function updateArrows() {
 }
 
 function displayNodeInfo(node) {
-    const index = nodes.findIndex(n => n.querySelector('.node-data') === node.querySelector('.node-data'));
+    const index = nodes.findIndex(n => n.querySelector('.node') === node);
     const nextIndex = (index + 1) % nodes.length;
     const nextValue = nodes[nextIndex].querySelector('.node-data').textContent;
     showMessage(`Node ${index + 1}: Data = ${node.querySelector('.node-data').textContent}, Next = ${nextValue}`);
