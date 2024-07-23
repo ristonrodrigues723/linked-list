@@ -122,6 +122,31 @@ h1 {
     margin: 0 5px;
 }
 
+
+.bottom-line-container {
+    position: relative;
+    height: 30px;
+    margin-top: 20px;
+}
+
+.bottom-line {
+    position: absolute;
+    height: 2px;
+    background-color: #333;
+    left: 15px;
+    right: 15px;
+}
+
+.bottom-arrow {
+    position: absolute;
+    right: 7px;
+    top: -4px;
+    width: 0;
+    height: 0;
+    border-left: 8px solid #333;
+    border-top: 5px solid transparent;
+    border-bottom: 5px solid transparent;
+}
 .arrow::after {
     content: '';
     position: absolute;

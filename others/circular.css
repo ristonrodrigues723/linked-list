@@ -7,15 +7,75 @@ body {
     margin: 0;
     background-color: #f0f0f0;
 }
-
-body {
-    font-family: Arial, sans-serif;
+#linkedList {
     display: flex;
+    flex-wrap: wrap;
     justify-content: center;
     align-items: center;
-    height: 100vh;
-    margin: 0;
-    background-color: #f0f0f0;
+    margin: 20px 0;
+    position: relative;
+    min-height: 150px;
+    padding: 10px;
+    background-color: #f9f9f9;
+    border-radius: 5px;
+    box-shadow: inset 0 0 5px rgba(0,0,0,0.1);
+}
+
+.connecting-line {
+    pointer-events: none;
+    z-index: -1;
+}
+
+.bottom-line-container {
+    position: absolute;
+    height: 30px;
+    bottom: -30px;
+    left: 0;
+    right: 0;
+}
+
+.bottom-line {
+    position: absolute;
+    height: 2px;
+    background-color: #333;
+    left: 15px;
+    right: 15px;
+    bottom: 15px;
+}
+
+.bottom-arrow {
+    position: absolute;
+    right: 7px;
+    bottom: 11px;
+    width: 0;
+    height: 0;
+    border-left: 8px solid #333;
+    border-top: 5px solid transparent;
+    border-bottom: 5px solid transparent;
+}
+.bottom-line-container {
+    position: relative;
+    height: 30px;
+    margin-top: 20px;
+}
+
+.bottom-line {
+    position: absolute;
+    height: 2px;
+    background-color: #333;
+    left: 15px;
+    right: 15px;
+}
+
+.bottom-arrow {
+    position: absolute;
+    right: 7px;
+    top: -4px;
+    width: 0;
+    height: 0;
+    border-left: 8px solid #333;
+    border-top: 5px solid transparent;
+    border-bottom: 5px solid transparent;
 }
 
 .container {

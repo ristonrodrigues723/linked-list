@@ -81,9 +81,37 @@ function updateArrows() {
         lastLineAcross.style.width = `${(nodes.length - 1) * 160}px`; // Adjust this value as needed
         lastLineAcross.style.left = '50%';
     }
+    updateBottomLine();
+    drawConnectingLine();
 }
 
+function updateBottomLine() {
+    const bottomLine = document.querySelector('.bottom-line');
+    if (!bottomLine) {
+        const bottomLineContainer = document.createElement('div');
+        bottomLineContainer.className = 'bottom-line-container';
+        const newBottomLine = document.createElement('div');
+        newBottomLine.className = 'bottom-line';
+        const bottomArrow = document.createElement('div');
+        bottomArrow.className = 'bottom-arrow';
+        bottomLineContainer.appendChild(newBottomLine);
+        bottomLineContainer.appendChild(bottomArrow);
+        linkedList.appendChild(bottomLineContainer);
+    }
+
+    const containerRect = linkedList.getBoundingClientRect();
+    const bottomLineContainer = document.querySelector('.bottom-line-container');
+    bottomLineContainer.style.width = `${containerRect.width}px`;
+    bottomLineContainer.style.left = '0';
+    bottomLineContainer.style.bottom = '-30px';
+}
+
+line.style.height = '2px'; // Makes the line thinner
+line.style.backgroundColor = '#3498db'; // Changes the color to blue
+line.style.top = `${startY + (height / 2) - 1}px`; // Centers the line vertically
+
 function drawConnectingLine() {
+
     const existingLine = document.querySelector('.connecting-line');
     if (existingLine) {
         existingLine.remove();
@@ -97,23 +125,18 @@ function drawConnectingLine() {
 
     const firstNode = nodes[0].querySelector('.node');
     const lastNode = nodes[nodes.length - 1].querySelector('.node');
-    const containerRect = linkedList.getBoundingClientRect();
 
-    const startX = firstNode.offsetLeft + firstNode.offsetWidth - containerRect.left;
-    const startY = firstNode.offsetTop + firstNode.offsetHeight / 2 - containerRect.top;
-    const endX = lastNode.offsetLeft + lastNode.offsetWidth - containerRect.left;
-    const endY = lastNode.offsetTop + lastNode.offsetHeight / 2 - containerRect.top;
+    const startX = firstNode.offsetLeft + firstNode.offsetWidth;
+    const startY = firstNode.offsetTop;
+    const endX = lastNode.offsetLeft + lastNode.offsetWidth;
+    const height = firstNode.offsetHeight;
 
-    const path = `M${startX},${startY} 
-                  V${startY + 5} 
-                  H${endX} 
-                  V${endY}`;
-
-    line.style.width = `${containerRect.width}px`;
-    line.style.height = `${containerRect.height}px`;
-    line.innerHTML = `<svg width="100%" height="100%">
-        <path d="${path}" fill="none" stroke="#333" stroke-width="2"/>
-    </svg>`;
+    line.style.position = 'absolute';
+    line.style.left = `${startX}px`;
+    line.style.top = `${startY}px`;
+    line.style.width = `${endX - startX}px`;
+    line.style.height = `${height}px`;
+    line.style.backgroundColor = '#333';
 }
 
 
@@ -236,4 +259,15 @@ function updateArrows() {
  
 
     drawConnectingLine();
+}
+
+window.addEventListener('resize', updateBottomLine);
+
+function updateBottomLine() {
+    const linkedList = document.getElementById('linkedList');
+    const bottomLineContainer = document.querySelector('.bottom-line-container');
+    const bottomLine = document.querySelector('.bottom-line');
+
+    const linkedListRect = linkedList.getBoundingClientRect();
+    bottomLineContainer.style.width = `${linkedListRect.width}px`;
 }
