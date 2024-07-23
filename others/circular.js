@@ -48,7 +48,15 @@ function updateArrows() {
 
     nodes.forEach((container, index) => {
         const arrow = container.querySelector('.arrow');
-        arrow.style.display = index < nodes.length - 1 ? 'block' : 'none';
+        const nodeLines = container.querySelector('.node-lines');
+        
+        if (index < nodes.length - 1) {
+            arrow.style.display = 'block';
+            nodeLines.style.display = 'block';
+        } else {
+            arrow.style.display = 'none';
+            nodeLines.style.display = 'none';
+        }
         
         const nodeNext = container.querySelector('.node-next');
         nodeNext.textContent = index < nodes.length - 1 ? 'Next' : 'Head';
@@ -65,8 +73,49 @@ function updateArrows() {
 
         lastNodeArrow.style.width = `${lastNodeRect.right - firstNodeRect.left}px`;
         lastNodeArrow.style.left = `${firstNodeRect.left - containerRect.left}px`;
+
+        // Show lines for the last node
+        const lastNodeLines = nodes[nodes.length - 1].querySelector('.node-lines');
+        lastNodeLines.style.display = 'block';
+        const lastLineAcross = lastNodeLines.querySelector('.line-across');
+        lastLineAcross.style.width = `${(nodes.length - 1) * 160}px`; // Adjust this value as needed
+        lastLineAcross.style.left = '50%';
     }
 }
+
+function drawConnectingLine() {
+    const existingLine = document.querySelector('.connecting-line');
+    if (existingLine) {
+        existingLine.remove();
+    }
+
+    if (nodes.length < 2) return;
+
+    const line = document.createElement('div');
+    line.className = 'connecting-line';
+    linkedList.appendChild(line);
+
+    const firstNode = nodes[0].querySelector('.node');
+    const lastNode = nodes[nodes.length - 1].querySelector('.node');
+    const containerRect = linkedList.getBoundingClientRect();
+
+    const startX = firstNode.offsetLeft + firstNode.offsetWidth - containerRect.left;
+    const startY = firstNode.offsetTop + firstNode.offsetHeight / 2 - containerRect.top;
+    const endX = lastNode.offsetLeft + lastNode.offsetWidth - containerRect.left;
+    const endY = lastNode.offsetTop + lastNode.offsetHeight / 2 - containerRect.top;
+
+    const path = `M${startX},${startY} 
+                  V${startY + 5} 
+                  H${endX} 
+                  V${endY}`;
+
+    line.style.width = `${containerRect.width}px`;
+    line.style.height = `${containerRect.height}px`;
+    line.innerHTML = `<svg width="100%" height="100%">
+        <path d="${path}" fill="none" stroke="#333" stroke-width="2"/>
+    </svg>`;
+}
+
 
 function displayNodeInfo(node) {
     const index = nodes.findIndex(n => n.querySelector('.node') === node);
@@ -182,4 +231,9 @@ function clearList() {
 for (let i = 0; i < 5; i++) {
     addNode();
 }
-updateArrows();
+
+function updateArrows() {
+ 
+
+    drawConnectingLine();
+}

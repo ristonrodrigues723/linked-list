@@ -8,6 +8,16 @@ body {
     background-color: #f0f0f0;
 }
 
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-color: #f0f0f0;
+}
+
 .container {
     text-align: center;
     max-width: 1000px;
@@ -85,6 +95,16 @@ h1 {
     background-color: #333;
     position: relative;
     margin: 0 5px;
+}
+
+.connecting-line {
+    position: absolute;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    width: 100%;
+    height: 100%;
+   
 }
 
 .arrow::after {
