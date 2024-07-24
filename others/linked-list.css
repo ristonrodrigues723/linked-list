@@ -10,109 +10,72 @@ body {
 
 .container {
     text-align: center;
+    max-width: 800px;
+    margin: 20px;
+    padding: 20px;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
 }
 
-.list-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin: 20px 0;
-    position: relative;
-    min-height: 150px;
-}
-
-.node-container {
-    display: flex;
-    align-items: center;
-}
-
-.node {
-    width: 40px;
-    height: 40px;
-    background-color: #4CAF50;
-    color: white;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border: 2px solid #333;
-    margin: 0 20px 0 0;
-}
-
-.arrow {
-    width: 20px;
-    height: 2px;
-    background-color: #333;
-    position: relative;
-}
-
-.arrow::after {
-    content: '';
-    position: absolute;
-    right: 0;
-    top: -4px;
-    width: 0;
-    height: 0;
-    border-left: 8px solid #333;
-    border-top: 5px solid transparent;
-    border-bottom: 5px solid transparent;
-}
-
-.last-node-arrow {
-    position: absolute;
-    height: 2px;
-    background-color: #333;
-    bottom: 20px;
-}
-
-.start-arrow, .end-arrow {
-    position: absolute;
-    width: 2px;
-    height: 20px;
-    background-color: #333;
-}
-
-.start-arrow {
-    left: 0;
-    bottom: 0;
-}
-
-.end-arrow {
-    right: 0;
-    bottom: 0;
-}
-
-.start-arrow::before, .end-arrow::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    width: 0;
-    height: 0;
-}
-
-.start-arrow::before {
-    right: -3px;
-    border-left: 8px solid #333;
-    border-top: 5px solid transparent;
-    border-bottom: 5px solid transparent;
-}
-
-.end-arrow::before {
-    right: -3px;
-    border-left: 8px solid #333;
-    border-top: 5px solid transparent;
-    border-bottom: 5px solid transparent;
+h1 {
+    color: #333;
 }
 
 .controls {
-    margin-top: 20px;
+    margin-bottom: 20px;
 }
 
 input, button {
     margin: 5px;
     padding: 5px 10px;
+    font-size: 14px;
 }
 
-#messageBox {
-    margin-top: 20px;
+.list-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    min-height: 100px;
+    padding: 10px;
+    background-color: #f9f9f9;
+    border-radius: 5px;
+}
+
+.node {
+    width: 60px;
+    height: 60px;
+    background-color: #3498db;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 10px;
+    border-radius: 50%;
     font-weight: bold;
+    position: relative;
+}
+
+.node::before,
+.node::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    width: 20px;
+    height: 2px;
+    background-color: #333;
+}
+
+.node::before {
+    left: -20px;
+}
+
+.node::after {
+    right: -20px;
+}
+
+.node:first-child::before,
+.node:last-child::after {
+    display: none;
 }
