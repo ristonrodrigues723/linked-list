@@ -73,15 +73,16 @@ h1 {
     border-radius: 5px;
     box-shadow: inset 0 0 5px rgba(0,0,0,0.1);
 }
-.node-container {
+
+.node-wrapper {
     display: flex;
     align-items: center;
     margin: 5px;
 }
 
 .node {
-    width: 120px;
-    height: 50px;
+    width: 180px;
+    height: 60px;
     background-color: #3498db;
     color: white;
     display: flex;
@@ -94,88 +95,31 @@ h1 {
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
-.node-data, .node-next {
+.node-content {
+    display: flex;
+    width: 100%;
     height: 100%;
+}
+
+.node-prev, .node-value, .node-next {
+    flex: 1;
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 0 10px;
+    padding: 5px;
+    font-size: 14px;
 }
 
-.node-data {
-    width: 60%;
-    border-right: 1px solid rgba(255, 255, 255, 0.3);
+.node-value {
     font-weight: bold;
-}
-
-.node-next {
-    width: 40%;
-    font-size: 0.9em;
-    color: rgba(255, 255, 255, 0.8);
+    border-left: 1px solid rgba(255, 255, 255, 0.3);
+    border-right: 1px solid rgba(255, 255, 255, 0.3);
 }
 
 .arrow {
-    width: 20px;
-    height: 2px;
-    background-color: #333;
-    position: relative;
+    font-size: 24px;
+    color: #2c3e50;
     margin: 0 5px;
-}
-
-
-.bottom-line-container {
-    position: relative;
-    height: 30px;
-    margin-top: 20px;
-}
-
-.bottom-line {
-    position: absolute;
-    height: 2px;
-    background-color: #333;
-    left: 15px;
-    right: 15px;
-}
-
-.bottom-arrow {
-    position: absolute;
-    right: 7px;
-    top: -4px;
-    width: 0;
-    height: 0;
-    border-left: 8px solid #333;
-    border-top: 5px solid transparent;
-    border-bottom: 5px solid transparent;
-}
-.arrow::after {
-    content: '';
-    position: absolute;
-    right: 0;
-    top: -4px;
-    width: 0;
-    height: 0;
-    border-left: 8px solid #333;
-    border-top: 5px solid transparent;
-    border-bottom: 5px solid transparent;
-}
-
-.circular-arrow {
-    position: absolute;
-    width: 20px;
-    height: 20px;
-    border: 2px solid #333;
-    border-top: none;
-    border-right: none;
-    bottom: -30px;
-    left: 50%;
-    transform: translateX(-50%) rotate(45deg);
-}
-
-.last-node-arrow {
-    position: absolute;
-    height: 2px;
-    background-color: #333;
-    bottom: -20px;
 }
 
 .controls {
