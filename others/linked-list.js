@@ -6,18 +6,21 @@ class Node {
     }
 }
 
-class DoublyLinkedList {
+class CircularDoublyLinkedList {
     constructor() {
         this.head = null;
-        this.tail = null;
     }
 
     addAtStart(value) {
         const newNode = new Node(value);
         if (!this.head) {
-            this.head = this.tail = newNode;
+            this.head = newNode;
+            newNode.next = newNode;
+            newNode.prev = newNode;
         } else {
             newNode.next = this.head;
+            newNode.prev = this.head.prev;
+            this.head.prev.next = newNode;
             this.head.prev = newNode;
             this.head = newNode;
         }
@@ -26,34 +29,38 @@ class DoublyLinkedList {
 
     addAtEnd(value) {
         const newNode = new Node(value);
-        if (!this.tail) {
-            this.head = this.tail = newNode;
+        if (!this.head) {
+            this.head = newNode;
+            newNode.next = newNode;
+            newNode.prev = newNode;
         } else {
-            newNode.prev = this.tail;
-            this.tail.next = newNode;
-            this.tail = newNode;
+            newNode.next = this.head;
+            newNode.prev = this.head.prev;
+            this.head.prev.next = newNode;
+            this.head.prev = newNode;
         }
         this.updateVisualization();
     }
 
     removeFromStart() {
         if (!this.head) return;
-        if (this.head === this.tail) {
-            this.head = this.tail = null;
+        if (this.head.next === this.head) {
+            this.head = null;
         } else {
+            this.head.prev.next = this.head.next;
+            this.head.next.prev = this.head.prev;
             this.head = this.head.next;
-            this.head.prev = null;
         }
         this.updateVisualization();
     }
 
     removeFromEnd() {
-        if (!this.tail) return;
-        if (this.head === this.tail) {
-            this.head = this.tail = null;
+        if (!this.head) return;
+        if (this.head.next === this.head) {
+            this.head = null;
         } else {
-            this.tail = this.tail.prev;
-            this.tail.next = null;
+            this.head.prev.prev.next = this.head;
+            this.head.prev = this.head.prev.prev;
         }
         this.updateVisualization();
     }
@@ -61,18 +68,20 @@ class DoublyLinkedList {
     updateVisualization() {
         const listContainer = document.getElementById('listContainer');
         listContainer.innerHTML = '';
+        if (!this.head) return;
+
         let current = this.head;
-        while (current) {
+        do {
             const nodeElement = document.createElement('div');
             nodeElement.className = 'node';
             nodeElement.textContent = current.value;
             listContainer.appendChild(nodeElement);
             current = current.next;
-        }
+        } while (current !== this.head);
     }
 }
 
-const list = new DoublyLinkedList();
+const list = new CircularDoublyLinkedList();
 
 function addNodeAtStart() {
     const value = document.getElementById('nodeValue').value;
