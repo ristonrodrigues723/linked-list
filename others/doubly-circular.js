@@ -186,7 +186,7 @@ function reverseList() {
 
 function clearList() {
     nodes.forEach(node => {
-        node.classList.add('remove-animation');
+        node.sclassList.add('remove-animation');
     });
     setTimeout(() => {
         listContainer.innerHTML = '';
