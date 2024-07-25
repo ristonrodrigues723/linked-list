@@ -3,20 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>circular Doubly Linked List Visualization</title>
+    <title>Circular Doubly Linked List Visualization</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="container">
-        <h1>circular Doubly Linked List Visualization</h1>
+        <h1>Circular Doubly Linked List Visualization</h1>
         <div class="controls">
             <input type="number" id="nodeValue" placeholder="Enter node value">
             <button onclick="addNodeAtStart()">Add at Start</button>
             <button onclick="addNodeAtEnd()">Add at End</button>
             <button onclick="removeNodeFromStart()">Remove from Start</button>
             <button onclick="removeNodeFromEnd()">Remove from End</button>
+            <button onclick="searchNode()">Search Node</button>
+            <button onclick="insertAtPosition()">Insert at Position</button>
+            <button onclick="deleteByValue()">Delete by Value</button>
+            <button onclick="clearAll()">Clear All</button>
         </div>
         <div id="listContainer" class="list-container"></div>
+        <div id="messageBox"></div>
     </div>
     <script src="script.js"></script>
 </body>
