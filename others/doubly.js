@@ -1,134 +1,145 @@
-const linkedList = document.getElementById('linkedList');
+const listContainer = document.getElementById('listContainer');
 const valueInput = document.getElementById('valueInput');
-const randomSizeInput = document.getElementById('randomSizeInput');
-const messageBox = document.getElementById('messageBox');
-let nodes = [];
+const positionInput = document.getElementById('positionInput');
 
-function showMessage(message, type = 'info') {
-    const messageElement = document.createElement('div');
-    messageElement.textContent = message;
-    messageElement.className = `message ${type}`;
-    messageBox.appendChild(messageElement);
-    messageBox.scrollTop = messageBox.scrollHeight;
+class Node {
+    constructor(value) {
+        this.value = value;
+        this.prev = null;
+        this.next = null;
+        this.element = this.createNodeElement();
+    }
+
+    createNodeElement() {
+        const nodeDiv = document.createElement('div');
+        nodeDiv.className = 'node node-appear';
+        nodeDiv.innerHTML = `
+            <div class="node-prev">Prev</div>
+            <div class="node-data">${this.value}</div>
+            <div class="node-next">Next</div>
+            <div class="prev-arrow arrow"></div>
+            <div class="next-arrow arrow"></div>
+        `;
+        return nodeDiv;
+    }
 }
 
-function createNodeElement(value, prev, next) {
-    const nodeWrapper = document.createElement('div');
-    nodeWrapper.className = 'node-wrapper';
-    
-    const node = document.createElement('div');
-    node.className = 'node';
-    node.innerHTML = `
-        <div class="node-content">
-            <div class="node-prev">${prev}</div>
-            <div class="node-value">${value}</div>
-            <div class="node-next">${next}</div>
-        </div>
-    `;
-    node.onclick = () => displayNodeInfo(node);
-    
-    nodeWrapper.appendChild(node);
-    return nodeWrapper;
+class DoublyCircularLinkedList {
+    constructor() {
+        this.head = null;
+        this.size = 0;
+    }
+
+    add(value) {
+        const newNode = new Node(value);
+
+        if (!this.head) {
+            this.head = newNode;
+            newNode.next = newNode;
+            newNode.prev = newNode;
+        } else {
+            const last = this.head.prev;
+            last.next = newNode;
+            newNode.prev = last;
+            newNode.next = this.head;
+            this.head.prev = newNode;
+        }
+
+        this.size++;
+        this.updateUI();
+    }
+
+    insert(value, position) {
+        if (position < 0 || position > this.size) return;
+
+        const newNode = new Node(value);
+
+        if (position === 0) {
+            if (!this.head) {
+                this.head = newNode;
+                newNode.next = newNode;
+                newNode.prev = newNode;
+            } else {
+                const last = this.head.prev;
+                newNode.next = this.head;
+                newNode.prev = last;
+                this.head.prev = newNode;
+                last.next = newNode;
+                this.head = newNode;
+            }
+        } else {
+            let current = this.head;
+            for (let i = 0; i < position - 1; i++) {
+                current = current.next;
+            }
+            newNode.next = current.next;
+            newNode.prev = current;
+            current.next.prev = newNode;
+            current.next = newNode;
+        }
+
+        this.size++;
+        this.updateUI();
+    }
+
+    removeLast() {
+        if (!this.head) return;
+
+        if (this.size === 1) {
+            this.head = null;
+        } else {
+            const last = this.head.prev;
+            last.prev.next = this.head;
+            this.head.prev = last.prev;
+        }
+
+        this.size--;
+        this.updateUI();
+    }
+
+    clear() {
+        this.head = null;
+        this.size = 0;
+        this.updateUI();
+    }
+
+    updateUI() {
+        listContainer.innerHTML = '';
+        if (!this.head) return;
+
+        let current = this.head;
+        do {
+            listContainer.appendChild(current.element);
+            current = current.next;
+        } while (current !== this.head);
+    }
 }
 
-function updateNodeConnections() {
-    nodes.forEach((nodeWrapper, index) => {
-        const node = nodeWrapper.querySelector('.node');
-        const prevValue = index > 0 ? nodes[index - 1].querySelector('.node-value').textContent : 'null';
-        const nextValue = index < nodes.length - 1 ? nodes[index + 1].querySelector('.node-value').textContent : 'null';
-        node.querySelector('.node-prev').textContent = prevValue;
-        node.querySelector('.node-next').textContent = nextValue;
-
-        // Remove existing arrows
-        while (nodeWrapper.firstChild !== node) {
-            nodeWrapper.removeChild(nodeWrapper.firstChild);
-        }
-        while (nodeWrapper.lastChild !== node) {
-            nodeWrapper.removeChild(nodeWrapper.lastChild);
-        }
-
-        // Add arrows
-        if (index > 0) {
-            const leftArrow = document.createElement('div');
-            leftArrow.className = 'arrow';
-            leftArrow.textContent = '⬅';
-            nodeWrapper.insertBefore(leftArrow, node);
-        }
-        if (index < nodes.length - 1) {
-            const rightArrow = document.createElement('div');
-            rightArrow.className = 'arrow';
-            rightArrow.textContent = '➡';
-            nodeWrapper.appendChild(rightArrow);
-        }
-    });
-}
+const list = new DoublyCircularLinkedList();
 
 function addNode() {
-    const value = valueInput.value || nodes.length + 1;
-    if (nodes.length < 8) {
-        const node = createNodeElement(value, 'null', 'null');
-        linkedList.appendChild(node);
-        nodes.push(node);
-        node.classList.add('add-animation');
-        updateNodeConnections();
-        valueInput.value = '';
-        showMessage(`Node with value ${value} added.`, 'success');
-    } else {
-        showMessage("Maximum number of nodes reached (8).", 'error');
-    }
+    const value = valueInput.value || Math.floor(Math.random() * 100);
+    list.add(value);
+    valueInput.value = '';
+}
+
+function insertNode() {
+    const value = valueInput.value || Math.floor(Math.random() * 100);
+    const position = parseInt(positionInput.value) || 0;
+    list.insert(value, position);
+    valueInput.value = '';
+    positionInput.value = '';
 }
 
 function removeNode() {
-    if (nodes.length > 0) {
-        const lastNode = nodes.pop();
-        lastNode.classList.add('remove-animation');
-        setTimeout(() => {
-            linkedList.removeChild(lastNode);
-        }, 300);
-        updateNodeConnections();
-        showMessage("Last node removed.", 'success');
-    } else {
-        showMessage("The list is empty.", 'error');
-    }
-}
-
-function displayNodeInfo(node) {
-    const index = nodes.findIndex(wrapper => wrapper.querySelector('.node') === node);
-    const currentValue = node.querySelector('.node-value').textContent;
-    const prevValue = node.querySelector('.node-prev').textContent;
-    const nextValue = node.querySelector('.node-next').textContent;
-    
-    showMessage(`The current node is ${currentValue}, previous is ${prevValue}, next is ${nextValue}`);
-}
-
-function generateRandomList() {
-    const size = parseInt(randomSizeInput.value) || 5;
-    if (size < 1 || size > 8) {
-        showMessage("Please enter a size between 1 and 8.", 'error');
-        return;
-    }
-
-    clearList();
-
-    for (let i = 0; i < size; i++) {
-        const randomValue = Math.floor(Math.random() * 100) + 1;
-        const node = createNodeElement(randomValue, 'null', 'null');
-        linkedList.appendChild(node);
-        nodes.push(node);
-        node.classList.add('add-animation');
-    }
-
-    updateNodeConnections();
-    showMessage(`Random list of ${size} nodes generated.`, 'success');
+    list.removeLast();
 }
 
 function clearList() {
-    linkedList.innerHTML = '';
-    nodes = [];
-    showMessage("List cleared.", 'success');
+    list.clear();
 }
 
-// Initialize with 3 nodes
-for (let i = 0; i < 3; i++) {
-    addNode();
+// Initialize with some nodes
+for (let i = 0; i < 5; i++) {
+    list.add(Math.floor(Math.random() * 100));
 }

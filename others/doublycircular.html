@@ -3,22 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Doubly Linked List Visualization</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Doubly Circular Linked List Visualization</title>
+    <link rel="stylesheet" href="doubly-circular.css">
 </head>
 <body>
+  
     <div class="container">
-        <h1>Doubly Linked List Visualization</h1>
-        <div id="linkedList" class="linked-list"></div>
+        <h1>Doubly Circular Linked List Visualization</h1>
+        
+        <div id="listContainer" class="list-container"></div>
         <div class="controls">
-            <input type="number" id="nodeValue" placeholder="Enter node value">
-            <button id="addNode">Add Node</button>
-            <button id="deleteNode">Delete Node</button>
-            <button id="reverseList">Reverse List</button>
-            <button id="generateRandom">Generate Random Node</button>
+            <input type="text" id="valueInput" placeholder="Enter value" aria-label="Enter node value">
+            <input type="number" id="positionInput" placeholder="Enter position" aria-label="Enter position">
+            <button onclick="addNode()">Add Node</button>
+            <button onclick="insertNode()">Insert Node</button>
+            <button onclick="removeNode()">Remove Last</button>
+            <button onclick="deleteNode()">Delete Node</button>
+            <button onclick="searchNode()">Search Node</button>
+            <button onclick="reverseList()">Reverse List</button>
+            <button onclick="clearList()">Clear List</button>
         </div>
         <div id="messageBox"></div>
     </div>
-    <script src="script.js"></script>
+    <script src="doubly-circular.js"></script>
 </body>
 </html>
