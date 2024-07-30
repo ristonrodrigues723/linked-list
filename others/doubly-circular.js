@@ -19,28 +19,31 @@ function createNodeElement(value) {
     const node = document.createElement('div');
     node.className = 'node';
     node.innerHTML = `
-        <div class="node-prev">Prev</div>
         <div class="node-data">${value}</div>
         <div class="node-next">Next</div>
     `;
     node.onclick = () => displayNodeInfo(node);
 
-    const prevArrow = document.createElement('div');
-    prevArrow.className = 'prev-arrow';
+    const arrow = document.createElement('div');
+    arrow.className = 'arrow';
 
-    const nextArrow = document.createElement('div');
-    nextArrow.className = 'next-arrow';
-
-    nodeContainer.appendChild(prevArrow);
     nodeContainer.appendChild(node);
-    nodeContainer.appendChild(nextArrow);
+    nodeContainer.appendChild(arrow);
 
     setTimeout(() => nodeContainer.classList.remove('add-animation'), 300);
     return nodeContainer;
 }
 
+
 function updateNodePositions() {
+    // Remove existing arrows and bottom line
+    const existingElements = document.querySelectorAll('.last-node-arrow, .down-arrow, .up-arrow, .bottom-line');
+    existingElements.forEach(element => element.remove());
+
+    // Clear the list container
     listContainer.innerHTML = '';
+
+    // Re-append nodes in the correct order
     nodes.forEach(node => listContainer.appendChild(node));
 
     if (nodes.length > 1) {
@@ -48,7 +51,7 @@ function updateNodePositions() {
         const lastNodeRect = nodes[nodes.length - 1].getBoundingClientRect();
         const containerRect = listContainer.getBoundingClientRect();
 
-        // Add circular connections
+        // Add bottom line
         const bottomLine = document.createElement('div');
         bottomLine.className = 'bottom-line';
         listContainer.appendChild(bottomLine);
@@ -56,12 +59,14 @@ function updateNodePositions() {
         bottomLine.style.left = `${firstNodeRect.left - containerRect.left}px`;
         bottomLine.style.top = `${lastNodeRect.bottom - containerRect.top + 30}px`;
 
+        // Add down arrow
         const downArrow = document.createElement('div');
         downArrow.className = 'down-arrow';
         listContainer.appendChild(downArrow);
         downArrow.style.left = `${lastNodeRect.right - containerRect.left - 10}px`;
         downArrow.style.top = `${lastNodeRect.bottom - containerRect.top}px`;
 
+        // Add up arrow
         const upArrow = document.createElement('div');
         upArrow.className = 'up-arrow';
         listContainer.appendChild(upArrow);
@@ -70,25 +75,19 @@ function updateNodePositions() {
     }
 
     nodes.forEach((container, index) => {
-        const prevArrow = container.querySelector('.prev-arrow');
-        const nextArrow = container.querySelector('.next-arrow');
-        prevArrow.style.display = 'block';
-        nextArrow.style.display = 'block';
+        const arrow = container.querySelector('.arrow');
+        arrow.style.display = 'block';  // Always show arrows
         
-        const nodePrev = container.querySelector('.node-prev');
         const nodeNext = container.querySelector('.node-next');
-        nodePrev.textContent = index > 0 ? 'Prev' : 'Last';
-        nodeNext.textContent = index < nodes.length - 1 ? 'Next' : 'First';
+        nodeNext.textContent = index < nodes.length - 1 ? 'Next' : 'First';  // Last node points to first
     });
 }
 
 function displayNodeInfo(node) {
     const index = nodes.findIndex(n => n.querySelector('.node') === node);
-    const prevIndex = index > 0 ? index - 1 : nodes.length - 1;
-    const nextIndex = index < nodes.length - 1 ? index + 1 : 0;
-    const prevValue = nodes[prevIndex].querySelector('.node-data').textContent;
+    let nextIndex = index < nodes.length - 1 ? index + 1 : 0;  // If it's the last node, next is the first node
     const nextValue = nodes[nextIndex].querySelector('.node-data').textContent;
-    showMessage(`Node ${index + 1}: Data = ${node.querySelector('.node-data').textContent}, Prev = ${prevValue}, Next = ${nextValue}`);
+    showMessage(`Node ${index + 1}: Data = ${node.querySelector('.node-data').textContent}, Next = ${nextValue}`);
 }
 
 function addNode() {
@@ -101,7 +100,7 @@ function addNode() {
         updateNodePositions();
         showMessage(`Node with value ${value} added successfully.`);
     } else {
-        showMessage("Maximum number of nodes reached (6).", true);
+        showMessage("Maximum number of nodes reached (15).", true);
     }
 }
 
@@ -114,17 +113,21 @@ function insertNode() {
     if (nodes.length < 6) {
         const nodeElement = createNodeElement(value);
         
+     
         if (position === nodes.length) {
             listContainer.appendChild(nodeElement);
         } else {
             listContainer.insertBefore(nodeElement, nodes[position]);
         }
         
+      
         nodes.splice(position, 0, nodeElement);
 
+      
         valueInput.value = '';
         positionInput.value = '';
 
+        // Update positions and show message
         updateNodePositions();
         showMessage(`Node with value ${value} inserted at position ${position + 1}.`);
     } else {
@@ -132,19 +135,21 @@ function insertNode() {
     }
 }
 
+
 function removeNode() {
     if (nodes.length > 0) {
         const lastNode = nodes.pop();
         lastNode.classList.add('remove-animation');
         setTimeout(() => {
             listContainer.removeChild(lastNode);
-            updateNodePositions();
+            updateNodePositions(); // Move this inside the setTimeout
         }, 300);
         showMessage("Last node removed successfully.");
     } else {
         showMessage("The list is already empty.", true);
     }
 }
+
 
 function deleteNode() {
     const value = valueInput.value;
@@ -180,13 +185,17 @@ function searchNode() {
 
 function reverseList() {
     nodes.reverse();
+    while (listContainer.firstChild) {
+        listContainer.removeChild(listContainer.firstChild);
+    }
+    nodes.forEach(node => listContainer.appendChild(node));
     updateNodePositions();
     showMessage("List reversed successfully.");
 }
 
 function clearList() {
     nodes.forEach(node => {
-        node.sclassList.add('remove-animation');
+        node.classList.add('remove-animation');
     });
     setTimeout(() => {
         listContainer.innerHTML = '';

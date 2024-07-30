@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,14 +8,26 @@
     <link rel="stylesheet" href="doubly-circular.css">
 </head>
 <body>
-  
+    <nav>
+        <div class="nav-content">
+            <a href="#" class="logo">LinkedList Viz</a>
+            <ul class="nav-links">
+                <li><a href="">Home</a></li>
+                <li><a href="../index.html">Singly Linked List</a></li>
+                <li><a href="doubly.html">Doubly Linked List</a></li>
+                <li><a href="circular.html">Circular Linked List</a></li>
+                <li><a href="#" class="active">Doubly Circular Linked List</a></li>
+            </ul>
+        </div>
+    </nav>
     <div class="container">
         <h1>Doubly Circular Linked List Visualization</h1>
         
         <div id="listContainer" class="list-container"></div>
         <div class="controls">
-            <input type="text" id="valueInput" placeholder="Enter value" aria-label="Enter node value">
-            <input type="number" id="positionInput" placeholder="Enter position" aria-label="Enter position">
+            
+            <input type="text" id="valueInput" placeholder="Enter value">
+            <input type="number" id="positionInput" placeholder="Enter position">
             <button onclick="addNode()">Add Node</button>
             <button onclick="insertNode()">Insert Node</button>
             <button onclick="removeNode()">Remove Last</button>
