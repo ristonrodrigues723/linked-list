@@ -154,12 +154,39 @@ nav {
     color: rgba(255, 255, 255, 0.8);
 }
 
-.arrow {
+.arrow-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    height: 50px;
+    margin: 0 5px;
+}
+
+.arrow-forward, .arrow-backward {
     width: 20px;
     height: 2px;
     background-color: #333;
     position: relative;
-    margin: 0 5px;
+}
+
+.arrow-forward::after, .arrow-backward::after {
+    content: '';
+    position: absolute;
+    top: -4px;
+    width: 0;
+    height: 0;
+    border-top: 5px solid transparent;
+    border-bottom: 5px solid transparent;
+}
+
+.arrow-forward::after {
+    right: 0;
+    border-left: 8px solid #333;
+}
+
+.arrow-backward::after {
+    left: 0;
+    border-right: 8px solid #333;
 }
 
 .arrow::after {
@@ -173,7 +200,24 @@ nav {
     border-top: 5px solid transparent;
     border-bottom: 5px solid transparent;
 }
+.node-info {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 20px;
+}
 
+.info-box {
+    border: 1px solid #3498db;
+    border-radius: 5px;
+    padding: 10px;
+    width: 30%;
+    background-color: #f0f8ff;
+}
+
+.info-box h3 {
+    margin-top: 0;
+    color: #2c3e50;
+}
 .last-node-arrow {
     position: absolute;
     height: 2px;

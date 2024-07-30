@@ -25,11 +25,20 @@ function createNodeElement(value) {
     `;
     node.onclick = () => displayNodeInfo(node);
 
-    const arrow = document.createElement('div');
-    arrow.className = 'arrow';
+    const arrowContainer = document.createElement('div');
+    arrowContainer.className = 'arrow-container';
+    
+    const forwardArrow = document.createElement('div');
+    forwardArrow.className = 'arrow-forward';
+    
+    const backwardArrow = document.createElement('div');
+    backwardArrow.className = 'arrow-backward';
+
+    arrowContainer.appendChild(forwardArrow);
+    arrowContainer.appendChild(backwardArrow);
 
     nodeContainer.appendChild(node);
-    nodeContainer.appendChild(arrow);
+    nodeContainer.appendChild(arrowContainer);
 
     setTimeout(() => nodeContainer.classList.remove('add-animation'), 300);
     return nodeContainer;
@@ -43,7 +52,6 @@ function updateNodePositions() {
 
     listContainer.innerHTML = '';
 
-
     nodes.forEach(node => listContainer.appendChild(node));
 
     if (nodes.length > 1) {
@@ -51,72 +59,81 @@ function updateNodePositions() {
         const lastNodeRect = nodes[nodes.length - 1].getBoundingClientRect();
         const containerRect = listContainer.getBoundingClientRect();
 
-      
+        // Add bottom line
         const bottomLine = document.createElement('div');
         bottomLine.className = 'bottom-line';
         listContainer.appendChild(bottomLine);
         bottomLine.style.width = `${lastNodeRect.right - firstNodeRect.left}px`;
         bottomLine.style.left = `${firstNodeRect.left - containerRect.left}px`;
-        bottomLine.style.top = `${lastNodeRect.bottom - containerRect.top + 30}px`;
+        bottomLine.style.top = `${lastNodeRect.bottom - containerRect.top + 35}px`;
 
-  
+        // Add down arrow
         const downArrow = document.createElement('div');
         downArrow.className = 'down-arrow';
         listContainer.appendChild(downArrow);
         downArrow.style.left = `${lastNodeRect.right - containerRect.left - 10}px`;
-        downArrow.style.top = `${lastNodeRect.bottom - containerRect.top}px`;
+        downArrow.style.top = `${lastNodeRect.bottom - containerRect.top + 5}px`;
 
         // Add up arrow
         const upArrow = document.createElement('div');
         upArrow.className = 'up-arrow';
         listContainer.appendChild(upArrow);
         upArrow.style.left = `${firstNodeRect.left - containerRect.left}px`;
-        upArrow.style.top = `${lastNodeRect.bottom - containerRect.top + 10}px`;
+        upArrow.style.top = `${lastNodeRect.bottom - containerRect.top + 15}px`;
 
-        // Add top line
+
         const topLine = document.createElement('div');
         topLine.className = 'top-line';
         listContainer.appendChild(topLine);
         topLine.style.width = `${lastNodeRect.right - firstNodeRect.left}px`;
         topLine.style.left = `${firstNodeRect.left - containerRect.left}px`;
-        topLine.style.top = `${firstNodeRect.top - containerRect.top - 30}px`;
+        topLine.style.top = `${firstNodeRect.top - containerRect.top - 35}px`;
 
+   
         const topUpArrow = document.createElement('div');
         topUpArrow.className = 'top-up-arrow';
         listContainer.appendChild(topUpArrow);
         topUpArrow.style.left = `${firstNodeRect.left - containerRect.left}px`;
-        topUpArrow.style.top = `${firstNodeRect.top - containerRect.top - 30}px`;
+        topUpArrow.style.top = `${firstNodeRect.top - containerRect.top - 35}px`;
         topUpArrow.style.height = '30px';
 
-  
         const topDownArrow = document.createElement('div');
         topDownArrow.className = 'top-down-arrow';
         listContainer.appendChild(topDownArrow);
         topDownArrow.style.left = `${lastNodeRect.right - containerRect.left - 10}px`;
-        topDownArrow.style.top = `${firstNodeRect.top - containerRect.top - 30}px`;
+        topDownArrow.style.top = `${firstNodeRect.top - containerRect.top - 35}px`;
         topDownArrow.style.height = '31px';
     }
+
     nodes.forEach((container, index) => {
-        const arrow = container.querySelector('.arrow');
-        arrow.style.display = 'block';  // Always show arrows
+        const arrowContainer = container.querySelector('.arrow-container');
+        
+        if (index < nodes.length - 1) {
+            arrowContainer.style.display = 'flex';
+        } else {
+            arrowContainer.style.display = 'none';
+        }
         
         const nodePrev = container.querySelector('.node-prev');
         const nodeNext = container.querySelector('.node-next');
         
-        nodePrev.textContent = index > 0 ? 'Prev' : 'Last';  
-        nodeNext.textContent = index < nodes.length - 1 ? 'Next' : 'First';  
+        nodePrev.textContent = index > 0 ? 'Prev' : 'Last';
+        nodeNext.textContent = index < nodes.length - 1 ? 'Next' : 'First';
     });
-   
 }
 
 function displayNodeInfo(node) {
     const index = nodes.findIndex(n => n.querySelector('.node') === node);
-    let prevIndex = index > 0 ? index - 1 : nodes.length - 1;  // If it's the first node, prev is the last node
-    let nextIndex = index < nodes.length - 1 ? index + 1 : 0;  // If it's the last node, next is the first node
+    let prevIndex = index > 0 ? index - 1 : nodes.length - 1;
+    let nextIndex = index < nodes.length - 1 ? index + 1 : 0;
     
     const prevValue = nodes[prevIndex].querySelector('.node-data').textContent;
     const nextValue = nodes[nextIndex].querySelector('.node-data').textContent;
     const currentValue = node.querySelector('.node-data').textContent;
+    
+    document.getElementById('prevNodeValue').textContent = `Value: ${prevValue}`;
+    document.getElementById('currentNodeValue').textContent = `Value: ${currentValue}`;
+    document.getElementById('nextNodeValue').textContent = `Value: ${nextValue}`;
     
     showMessage(`Node ${index + 1}: Data = ${currentValue}, Prev = ${prevValue}, Next = ${nextValue}`);
 }
