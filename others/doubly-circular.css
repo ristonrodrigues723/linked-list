@@ -17,7 +17,41 @@ body {
     box-shadow: 0 0 10px rgba(0,0,0,0.1);
     flex: 1;
 }
+.node {
+    width: 180px;  /* Increased width to accommodate Prev and Next */
+    height: 50px;
+    background-color: #3498db;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 5px;
+    position: relative;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
 
+.node-prev, .node-next, .node-data {
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0 5px;
+}
+
+.node-prev, .node-next {
+    width: 30%;
+    font-size: 0.8em;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.node-data {
+    width: 40%;
+    border-left: 1px solid rgba(255, 255, 255, 0.3);
+    border-right: 1px solid rgba(255, 255, 255, 0.3);
+    font-weight: bold;
+}
 h1 {
     color: #2c3e50;
     text-align: center;

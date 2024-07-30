@@ -19,6 +19,7 @@ function createNodeElement(value) {
     const node = document.createElement('div');
     node.className = 'node';
     node.innerHTML = `
+        <div class="node-prev">Prev</div>
         <div class="node-data">${value}</div>
         <div class="node-next">Next</div>
     `;
@@ -39,6 +40,7 @@ function updateNodePositions() {
     // Remove existing arrows and lines
     const existingElements = document.querySelectorAll('.last-node-arrow, .down-arrow, .up-arrow, .bottom-line, .top-line, .top-down-arrow, .top-up-arrow');
     existingElements.forEach(element => element.remove());
+
     listContainer.innerHTML = '';
 
 
@@ -49,7 +51,7 @@ function updateNodePositions() {
         const lastNodeRect = nodes[nodes.length - 1].getBoundingClientRect();
         const containerRect = listContainer.getBoundingClientRect();
 
-        // Add bottom line
+      
         const bottomLine = document.createElement('div');
         bottomLine.className = 'bottom-line';
         listContainer.appendChild(bottomLine);
@@ -57,7 +59,7 @@ function updateNodePositions() {
         bottomLine.style.left = `${firstNodeRect.left - containerRect.left}px`;
         bottomLine.style.top = `${lastNodeRect.bottom - containerRect.top + 30}px`;
 
-
+  
         const downArrow = document.createElement('div');
         downArrow.className = 'down-arrow';
         listContainer.appendChild(downArrow);
@@ -79,35 +81,44 @@ function updateNodePositions() {
         topLine.style.left = `${firstNodeRect.left - containerRect.left}px`;
         topLine.style.top = `${firstNodeRect.top - containerRect.top - 30}px`;
 
-        // Add top down arrow
-        const topDownArrow = document.createElement('div');
-        topDownArrow.className = 'top-down-arrow';
-        listContainer.appendChild(topDownArrow);
-        topDownArrow.style.left = `${firstNodeRect.left - containerRect.left}px`;
-        topDownArrow.style.top = `${firstNodeRect.top - containerRect.top - 20}px`;
-
-        // Add top up arrow
         const topUpArrow = document.createElement('div');
         topUpArrow.className = 'top-up-arrow';
         listContainer.appendChild(topUpArrow);
-        topUpArrow.style.left = `${lastNodeRect.right - containerRect.left - 10}px`;
+        topUpArrow.style.left = `${firstNodeRect.left - containerRect.left}px`;
         topUpArrow.style.top = `${firstNodeRect.top - containerRect.top - 30}px`;
-    }
+        topUpArrow.style.height = '30px';
 
+  
+        const topDownArrow = document.createElement('div');
+        topDownArrow.className = 'top-down-arrow';
+        listContainer.appendChild(topDownArrow);
+        topDownArrow.style.left = `${lastNodeRect.right - containerRect.left - 10}px`;
+        topDownArrow.style.top = `${firstNodeRect.top - containerRect.top - 30}px`;
+        topDownArrow.style.height = '31px';
+    }
     nodes.forEach((container, index) => {
         const arrow = container.querySelector('.arrow');
-        arrow.style.display = 'block'; 
+        arrow.style.display = 'block';  // Always show arrows
         
+        const nodePrev = container.querySelector('.node-prev');
         const nodeNext = container.querySelector('.node-next');
-        nodeNext.textContent = index < nodes.length - 1 ? 'Next' : 'First';  // Last node points to first
+        
+        nodePrev.textContent = index > 0 ? 'Prev' : 'Last';  
+        nodeNext.textContent = index < nodes.length - 1 ? 'Next' : 'First';  
     });
+   
 }
 
 function displayNodeInfo(node) {
     const index = nodes.findIndex(n => n.querySelector('.node') === node);
+    let prevIndex = index > 0 ? index - 1 : nodes.length - 1;  // If it's the first node, prev is the last node
     let nextIndex = index < nodes.length - 1 ? index + 1 : 0;  // If it's the last node, next is the first node
+    
+    const prevValue = nodes[prevIndex].querySelector('.node-data').textContent;
     const nextValue = nodes[nextIndex].querySelector('.node-data').textContent;
-    showMessage(`Node ${index + 1}: Data = ${node.querySelector('.node-data').textContent}, Next = ${nextValue}`);
+    const currentValue = node.querySelector('.node-data').textContent;
+    
+    showMessage(`Node ${index + 1}: Data = ${currentValue}, Prev = ${prevValue}, Next = ${nextValue}`);
 }
 
 function addNode() {
